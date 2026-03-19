@@ -1,48 +1,43 @@
 /**
- * anytype-rtl: Custom CSS for Anytype Desktop (v3)
+ * anytype-rtl: Custom CSS for Anytype Desktop
  *
- * KEY: direction:rtl already reverses flex item order.
- * Do NOT use flex-direction:row-reverse (double-reversal bug).
+ * Works with Anytype's built-in RTL detection (isRtl class + align2).
+ * No JS needed — just paste via Menu > File > Apply Custom CSS, then Cmd+R.
  *
- * INSTALL: Menu > File > Open > Custom CSS, paste, Apply Custom CSS, Cmd+R
- * ALSO: run rtl-detect.js in DevTools console to set dir on blocks.
+ * KEY: direction:rtl (from .isRtl) already reverses flex item order.
+ * Do NOT use flex-direction:row-reverse — that double-reverses.
  */
 
-[dir="rtl"] .wrapContent { text-align: right; }
-
-/* Quote border flip */
-.block.blockText[dir="rtl"][class*="textQuote"] .wrapContent {
-  border-left: none;
-  border-right: 3px solid var(--color-shape-primary, #b3b3b3);
-  padding-left: 0;
-  padding-right: 1em;
-}
-
-/* Number digits stay LTR */
-.block.blockText[dir="rtl"][class*="textNumbered"] .number {
+/* ── Numbered markers: keep "1." not ".1" ─────────────────────── */
+.flex.isRtl .markers .marker.markerNumbered > span {
   direction: ltr;
   unicode-bidi: bidi-override;
 }
 
-/* Toggle arrow mirror */
-.block.blockText[dir="rtl"][class*="textToggle"] .icon.toggle {
+/* ── Toggle arrow: point left when collapsed in RTL ───────────── */
+.block.align2 > .wrapContent > .selectionTarget > .dropTarget > .flex.isRtl > .markers > .markerToggle {
   transform: scaleX(-1);
 }
-
-/* Nested indent flip */
-[dir="rtl"] > .children {
-  margin-left: 0;
-  margin-right: 26px;
+.block.align2.isToggled > .wrapContent > .selectionTarget > .dropTarget > .flex.isRtl > .markers > .markerToggle {
+  transform: scaleX(-1) rotateZ(90deg);
 }
 
-/* Tables */
-.block.blockTable[dir="rtl"] td,
-.block.blockTable[dir="rtl"] th {
-  text-align: right;
+/* ── Callout: flip children padding for RTL ───────────────────── */
+.block.blockText.textCallout.align2 > .wrapContent > .children {
+  padding-left: 16px;
+  padding-right: 0px;
 }
 
-/* Code always LTR */
-.block.blockText[class*="textCode"] .wrapContent {
-  direction: ltr !important;
-  text-align: left !important;
+/* ── Quote border: already handled by align2 in Anytype ────────
+   (align2 sets right-aligned quote styles natively)
+   If you need it for Custom CSS with dir="rtl" instead:
+
+.block.blockText.textQuote[dir="rtl"] > .wrapContent > .additional > .line {
+  left: auto;
+  right: 11px;
 }
+.block.blockText.textQuote[dir="rtl"] > .wrapContent > .selectionTarget > .dropTarget > .flex > .editableWrap {
+  padding-left: 0;
+  padding-right: 28px;
+}
+*/

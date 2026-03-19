@@ -1,0 +1,52 @@
+From: anytype-rtl <rtl@anytype-rtl.dev>
+Subject: [PATCH] Improve RTL support for numbered lists, toggles, and callouts
+
+Enhances existing RTL support in the desktop app:
+- Fix numbered list marker period placement (prevents ".1" instead of "1.")
+- Mirror toggle arrow direction for RTL blocks
+- Flip callout children padding for RTL
+
+The detection and basic RTL infrastructure already exists (isRtl class,
+direction: rtl, marker margin flip). This patch addresses the remaining
+visual issues for Hebrew and Arabic content.
+
+Ref: https://github.com/anyproto/anytype-ts/issues/757
+---
+ src/scss/block/common.scss | 7 +++++++
+ src/scss/block/text.scss   | 9 +++++++++
+ 2 files changed, 16 insertions(+)
+
+diff --git a/src/scss/block/text.scss b/src/scss/block/text.scss
+index 0000000..1111111 100644
+--- a/src/scss/block/text.scss
++++ b/src/scss/block/text.scss
+@@ -37,6 +37,15 @@
+ 			.marker { margin-right: 0px; margin-left: 6px; }
+ 		}
++
++		/* Numbered markers: keep digit+period in LTR order to prevent ".1" instead of "1." */
++		.markers .marker.markerNumbered > span {
++			direction: ltr;
++			unicode-bidi: bidi-override;
++		}
+ 	}
++
++	/* Callout: flip children padding for RTL */
++	.block.blockText.textCallout.align2 > .wrapContent > .children { padding-left: 16px; padding-right: 0px; }
+ }
+
+diff --git a/src/scss/block/common.scss b/src/scss/block/common.scss
+index 0000000..1111111 100644
+--- a/src/scss/block/common.scss
++++ b/src/scss/block/common.scss
+@@ -113,6 +113,13 @@
+ 	.block.isToggled > .wrapContent > .selectionTarget > .dropTarget > .flex > .markers > .markerToggle { transform: rotateZ(90deg); }
++
++	/* RTL: mirror toggle arrow so collapsed state points left instead of right */
++	.block.align2 > .wrapContent > .selectionTarget > .dropTarget > .flex.isRtl > .markers > .markerToggle {
++		transform: scaleX(-1);
++	}
++	.block.align2.isToggled > .wrapContent > .selectionTarget > .dropTarget > .flex.isRtl > .markers > .markerToggle {
++		transform: scaleX(-1) rotateZ(90deg);
++	}
+
