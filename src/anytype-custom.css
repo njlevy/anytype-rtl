@@ -1,43 +1,67 @@
 /**
- * anytype-rtl: Custom CSS for Anytype Desktop
- *
- * Works with Anytype's built-in RTL detection (isRtl class + align2).
- * No JS needed — just paste via Menu > File > Apply Custom CSS, then Cmd+R.
- *
- * KEY: direction:rtl (from .isRtl) already reverses flex item order.
- * Do NOT use flex-direction:row-reverse — that double-reverses.
+ * anytype-rtl: Force RTL on all text blocks
+ * For Hebrew-primary documents. Code blocks stay LTR.
+ * Paste via Menu > File > Apply Custom CSS, then Cmd+R.
  */
 
+/* ── All text blocks: RTL by default ─────────────────────────── */
+.blocks .block.blockText {
+  flex-direction: row-reverse;
+}
+.blocks .block.blockText > .wrapMenu {
+  text-align: left;
+}
+.blocks .block.blockText > .wrapMenu .icon.dnd {
+  right: auto;
+  left: 6px;
+}
+.blocks .block.blockText .flex {
+  direction: rtl;
+}
+.blocks .block.blockText .editableWrap {
+  text-align: right;
+}
+
+/* ── Marker margin flip ──────────────────────────────────────── */
+.blocks .block.blockText .markers .marker {
+  margin-right: 0px;
+  margin-left: 6px;
+}
+
 /* ── Numbered markers: keep "1." not ".1" ─────────────────────── */
-.flex.isRtl .markers .marker.markerNumbered > span {
+.blocks .block.blockText .markers .marker.markerNumbered > span {
   direction: ltr;
   unicode-bidi: bidi-override;
 }
 
-/* ── Toggle arrow: point left when collapsed in RTL ───────────── */
-.block.align2 > .wrapContent > .selectionTarget > .dropTarget > .flex.isRtl > .markers > .markerToggle {
+/* ── Toggle arrow: point left when collapsed ──────────────────── */
+.blocks .block.blockText .markers .markerToggle {
   transform: scaleX(-1);
 }
-.block.align2.isToggled > .wrapContent > .selectionTarget > .dropTarget > .flex.isRtl > .markers > .markerToggle {
+.blocks .block.blockText.isToggled .markers .markerToggle {
   transform: scaleX(-1) rotateZ(90deg);
 }
 
-/* ── Callout: flip children padding for RTL ───────────────────── */
-.block.blockText.textCallout.align2 > .wrapContent > .children {
+/* ── Callout: flip children padding ──────────────────────────── */
+.blocks .block.blockText.textCallout > .wrapContent > .children {
   padding-left: 16px;
   padding-right: 0px;
 }
 
-/* ── Quote border: already handled by align2 in Anytype ────────
-   (align2 sets right-aligned quote styles natively)
-   If you need it for Custom CSS with dir="rtl" instead:
-
-.block.blockText.textQuote[dir="rtl"] > .wrapContent > .additional > .line {
+/* ── Code blocks: force LTR ──────────────────────────────────── */
+.blocks .block.blockText.textCode {
+  flex-direction: row;
+}
+.blocks .block.blockText.textCode > .wrapMenu {
+  text-align: right;
+}
+.blocks .block.blockText.textCode > .wrapMenu .icon.dnd {
+  right: 6px;
   left: auto;
-  right: 11px;
 }
-.block.blockText.textQuote[dir="rtl"] > .wrapContent > .selectionTarget > .dropTarget > .flex > .editableWrap {
-  padding-left: 0;
-  padding-right: 28px;
+.blocks .block.blockText.textCode .flex {
+  direction: ltr;
 }
-*/
+.blocks .block.blockText.textCode .editableWrap {
+  text-align: left;
+}
