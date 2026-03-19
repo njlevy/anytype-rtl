@@ -1,0 +1,103 @@
+/**
+ * anytype-rtl: BiDi Stylesheet (v3)
+ *
+ * KEY INSIGHT: direction:rtl on a flex container already reverses
+ * item order. Do NOT use flex-direction:row-reverse — that would
+ * double-reverse back to LTR.
+ *
+ * Uses [dir="rtl"] attribute selectors for maximum compatibility.
+ * The JS injector (rtl-detect.js) sets dir="rtl" on blocks based
+ * on content analysis.
+ */
+
+/* ═══ Base ═════════════════════════════════════════════════════ */
+
+[dir="rtl"] {
+  direction: rtl;
+  text-align: right;
+  unicode-bidi: plaintext;
+}
+
+[dir="ltr"] {
+  direction: ltr;
+  text-align: left;
+}
+
+/* ═══ Quotes — border flips to right ══════════════════════════ */
+
+.block.blockText[dir="rtl"][class*="textQuote"] .wrapContent,
+.block.textQuote[dir="rtl"] .wrapContent {
+  border-left: none;
+  border-right: 3px solid var(--color-shape-primary, #b3b3b3);
+  padding-left: 0;
+  padding-right: 1em;
+}
+
+/* ═══ Numbers — digits stay LTR ═══════════════════════════════ */
+
+.block.blockText[dir="rtl"][class*="textNumbered"] .number,
+.block.textNumbered[dir="rtl"] .number {
+  direction: ltr;
+  unicode-bidi: bidi-override;
+}
+
+/* ═══ Toggle — mirror arrow ═══════════════════════════════════ */
+
+.block.blockText[dir="rtl"][class*="textToggle"] .icon.toggle,
+.block.textToggle[dir="rtl"] .icon-toggle {
+  transform: scaleX(-1);
+}
+
+/* ═══ Nested blocks — indent from the right ═══════════════════ */
+
+[dir="rtl"] > .children {
+  margin-left: 0;
+  margin-right: 26px;
+}
+
+/* ═══ Tables ══════════════════════════════════════════════════ */
+
+.block.blockTable[dir="rtl"] td,
+.block.blockTable[dir="rtl"] th {
+  text-align: right;
+}
+
+/* ═══ Code — always LTR ══════════════════════════════════════ */
+
+.block.blockText[class*="textCode"] .wrapContent,
+.block.textCode .wrapContent {
+  direction: ltr !important;
+  text-align: left !important;
+  unicode-bidi: embed !important;
+}
+
+/* ═══ Published page generics ════════════════════════════════ */
+
+p[dir="rtl"], li[dir="rtl"],
+h1[dir="rtl"], h2[dir="rtl"], h3[dir="rtl"], h4[dir="rtl"],
+td[dir="rtl"], th[dir="rtl"] {
+  text-align: right;
+}
+
+blockquote[dir="rtl"] {
+  border-left: none;
+  border-right: 3px solid var(--color-shape-primary, #ccc);
+  padding-left: 0;
+  padding-right: 1em;
+}
+
+ul[dir="rtl"], ol[dir="rtl"] {
+  padding-left: 0;
+  padding-right: 2em;
+}
+
+/* ═══ Print ══════════════════════════════════════════════════ */
+
+@media print {
+  [dir="rtl"] { text-align: right; }
+  blockquote[dir="rtl"] {
+    border-left: none;
+    border-right: 3px solid #999;
+    padding-right: 1em; padding-left: 0;
+  }
+}

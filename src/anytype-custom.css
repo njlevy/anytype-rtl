@@ -1,0 +1,48 @@
+/**
+ * anytype-rtl: Custom CSS for Anytype Desktop (v3)
+ *
+ * KEY: direction:rtl already reverses flex item order.
+ * Do NOT use flex-direction:row-reverse (double-reversal bug).
+ *
+ * INSTALL: Menu > File > Open > Custom CSS, paste, Apply Custom CSS, Cmd+R
+ * ALSO: run rtl-detect.js in DevTools console to set dir on blocks.
+ */
+
+[dir="rtl"] .wrapContent { text-align: right; }
+
+/* Quote border flip */
+.block.blockText[dir="rtl"][class*="textQuote"] .wrapContent {
+  border-left: none;
+  border-right: 3px solid var(--color-shape-primary, #b3b3b3);
+  padding-left: 0;
+  padding-right: 1em;
+}
+
+/* Number digits stay LTR */
+.block.blockText[dir="rtl"][class*="textNumbered"] .number {
+  direction: ltr;
+  unicode-bidi: bidi-override;
+}
+
+/* Toggle arrow mirror */
+.block.blockText[dir="rtl"][class*="textToggle"] .icon.toggle {
+  transform: scaleX(-1);
+}
+
+/* Nested indent flip */
+[dir="rtl"] > .children {
+  margin-left: 0;
+  margin-right: 26px;
+}
+
+/* Tables */
+.block.blockTable[dir="rtl"] td,
+.block.blockTable[dir="rtl"] th {
+  text-align: right;
+}
+
+/* Code always LTR */
+.block.blockText[class*="textCode"] .wrapContent {
+  direction: ltr !important;
+  text-align: left !important;
+}

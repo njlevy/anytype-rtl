@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+<html lang="he">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>anytype-rtl Demo</title>
+  <style>
+    :root {
+      --color-shape-primary: #b3b3b3;
+      --color-bg-primary: #fff;
+      --color-text-primary: #171717;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Helvetica Neue', Arial, sans-serif;
+      max-width: 760px; margin: 0 auto; padding: 2em 1em;
+      color: var(--color-text-primary); background: var(--color-bg-primary);
+      line-height: 1.65;
+    }
+
+    .demo-header { text-align: center; margin-bottom: 2em; padding-bottom: 1em; border-bottom: 1px solid #eee; }
+    .demo-header h1 { font-size: 1.5em; margin-bottom: 0.25em; }
+    .demo-header p { color: #888; font-size: 0.9em; }
+    .demo-section { margin-bottom: 2em; padding: 1em; background: #fafafa; border-radius: 8px; }
+    .demo-section h2 { font-size: 1.1em; color: #555; margin-bottom: 0.75em; padding-bottom: 0.5em; border-bottom: 1px solid #eee; }
+
+    /* ═══ Anytype Block Base Styles ════════════════════════════ */
+    .blocks { padding: 0; }
+    .block { margin-bottom: 0.75em; position: relative; }
+
+    .block .wrapContent {
+      display: flex;
+      align-items: flex-start;
+      gap: 0.5em;
+      padding: 0.25em 0;
+    }
+
+    .block.textParagraph .wrapContent { display: block; }
+    .block.textHeader1 .wrapContent { font-size: 1.75em; font-weight: 700; display: block; }
+    .block.textHeader2 .wrapContent { font-size: 1.35em; font-weight: 600; display: block; }
+
+    .block.textQuote .wrapContent {
+      border-left: 3px solid var(--color-shape-primary);
+      padding-left: 1em;
+      font-style: italic;
+      display: block;
+    }
+
+    .block.textCallout > .wrapContent {
+      background: #f0f0f0;
+      border-radius: 6px;
+      padding: 0.75em 1em;
+    }
+
+    .block.textBulleted .marker { flex-shrink: 0; width: 1em; text-align: center; margin-top: 0.1em; }
+    .block.textBulleted .marker::before { content: '\2022'; font-size: 1.2em; }
+    .block.textNumbered .number { flex-shrink: 0; min-width: 1.5em; font-weight: 500; }
+    .block.textCheckbox .check {
+      flex-shrink: 0; width: 16px; height: 16px;
+      border: 2px solid #999; border-radius: 3px; margin-top: 0.3em;
+    }
+    .block.textToggle .icon-toggle { flex-shrink: 0; margin-top: 0.15em; }
+    .block.textToggle .icon-toggle::before { content: '\25B6'; font-size: 0.7em; }
+
+    .block > .children { margin-left: 26px; }
+
+    .block.textCode .wrapContent {
+      background: #1e1e1e; color: #d4d4d4;
+      font-family: 'JetBrains Mono', 'Fira Code', monospace;
+      font-size: 0.9em; padding: 1em; border-radius: 6px;
+      display: block; overflow-x: auto; white-space: pre;
+    }
+
+    .block.blockTable table { width: 100%; border-collapse: collapse; }
+    .block.blockTable td, .block.blockTable th { border: 1px solid #ddd; padding: 0.5em 0.75em; text-align: left; }
+    .block.blockTable th { background: #f5f5f5; font-weight: 600; }
+
+    /* ═══════════════════════════════════════════════════════════
+       RTL OVERRIDES — all keyed off [dir="rtl"]
+       ═══════════════════════════════════════════════════════════ */
+
+    /* Base: right-align everything */
+    [dir="rtl"] {
+      direction: rtl;
+      text-align: right;
+    }
+
+    /* Quote: border flips to right side */
+    .block.textQuote[dir="rtl"] .wrapContent {
+      border-left: none;
+      border-right: 3px solid var(--color-shape-primary);
+      padding-left: 0;
+      padding-right: 1em;
+    }
+
+    /*
+     * direction: rtl on the parent block already reverses
+     * flex item order (first child goes to the right).
+     * Do NOT add flex-direction: row-reverse — that would
+     * double-reverse it back to LTR.
+     */
+
+    /* Numbers: digit only in the span, period added via CSS */
+    .block.textNumbered[dir="rtl"] .number::after {
+      content: '.';
+    }
+
+    /* Toggle: mirror the arrow for RTL */
+    .block.textToggle[dir="rtl"] .icon-toggle {
+      transform: scaleX(-1);
+    }
+
+    /* Nested blocks: indent from the right */
+    [dir="rtl"] > .children {
+      margin-left: 0;
+      margin-right: 26px;
+    }
+
+    /* Tables */
+    .block.blockTable[dir="rtl"] td,
+    .block.blockTable[dir="rtl"] th {
+      text-align: right;
+    }
+
+    /* Code: always LTR regardless of parent */
+    .block.textCode .wrapContent {
+      direction: ltr !important;
+      text-align: left !important;
+      unicode-bidi: embed !important;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="demo-header">
+    <h1>anytype-rtl</h1>
+    <p>BiDi support for Anytype — Hebrew + mixed content</p>
+  </div>
+
+  <div class="blocks">
+
+    <!-- ─── Pure Hebrew ────────────────────────────────── -->
+    <div class="demo-section">
+      <h2>Pure Hebrew</h2>
+
+      <div class="block textHeader1" dir="rtl">
+        <div class="wrapContent">שלום עולם — ברוכים הבאים</div>
+      </div>
+
+      <div class="block textParagraph" dir="rtl">
+        <div class="wrapContent">זוהי פסקה לדוגמה בעברית. המערכת מזהה אוטומטית שהטקסט כתוב מימין לשמאל ומתאימה את כיוון הכתיבה, היישור, ומיקום סימני הפיסוק בהתאם.</div>
+      </div>
+
+      <div class="block textQuote" dir="rtl">
+        <div class="wrapContent">"המפה אינה השטח. רשימת המשימות אינה העבודה." — נוסלן</div>
+      </div>
+
+      <div class="block textCallout" dir="rtl">
+        <div class="wrapContent">
+          <span style="font-size:1.3em;flex-shrink:0">💡</span>
+          <span>שימו לב: הקריאה לפעולה מוצגת בצד ימין, האייקון בשמאל — בדיוק הפוך מ-LTR</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- ─── Hebrew Lists ───────────────────────────────── -->
+    <div class="demo-section">
+      <h2>Hebrew Lists</h2>
+
+      <div class="block textBulleted" dir="rtl">
+        <div class="wrapContent">
+          <span class="marker"></span>
+          <span>פריט ראשון ברשימה עם תבליטים</span>
+        </div>
+      </div>
+
+      <div class="block textBulleted" dir="rtl">
+        <div class="wrapContent">
+          <span class="marker"></span>
+          <span>פריט שני — שימו לב שהנקודה בצד ימין</span>
+        </div>
+      </div>
+
+      <div class="block textBulleted" dir="rtl">
+        <div class="wrapContent">
+          <span class="marker"></span>
+          <span>פריט שלישי עם סוגריים (בדיקה) ונקודתיים: כאן</span>
+        </div>
+      </div>
+
+      <div class="block textNumbered" dir="rtl">
+        <div class="wrapContent">
+          <span class="number">1</span>
+          <span>רשימה ממוספרת — המספרים נשארים בסדר הנכון</span>
+        </div>
+      </div>
+
+      <div class="block textNumbered" dir="rtl">
+        <div class="wrapContent">
+          <span class="number">2</span>
+          <span>הספרות עצמן תמיד LTR (כך צריך להיות)</span>
+        </div>
+      </div>
+
+      <div class="block textCheckbox" dir="rtl">
+        <div class="wrapContent">
+          <span class="check"></span>
+          <span>משימה לביצוע — תיבת הסימון בימין</span>
+        </div>
+      </div>
+
+      <div class="block textToggle" dir="rtl">
+        <div class="wrapContent">
+          <span class="icon-toggle"></span>
+          <span>לחצו לפתיחה — החץ הפוך לכיוון RTL</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- ─── Mixed BiDi ─────────────────────────────────── -->
+    <div class="demo-section">
+      <h2>Mixed Hebrew + English</h2>
+
+      <div class="block textParagraph" dir="rtl">
+        <div class="wrapContent">הפרויקט נקרא anytype-rtl והוא תומך ב-BiDi באופן אוטומטי. כל block מקבל כיוון בנפרד.</div>
+      </div>
+
+      <div class="block textParagraph" dir="ltr">
+        <div class="wrapContent">This paragraph starts with English but contains עברית in the middle and stays LTR because English is the primary direction.</div>
+      </div>
+
+      <div class="block textParagraph" dir="rtl">
+        <div class="wrapContent">שימו לב ש-CSS variables כמו <code style="background:#eee;padding:0 4px;border-radius:3px">--color-text-primary</code> עובדים גם ב-RTL. זה חשוב ל-theming.</div>
+      </div>
+
+      <div class="block textHeader2" dir="rtl">
+        <div class="wrapContent">כותרת עם English Words בתוכה</div>
+      </div>
+    </div>
+
+    <!-- ─── Punctuation ────────────────────────────────── -->
+    <div class="demo-section">
+      <h2>Punctuation</h2>
+
+      <div class="block textParagraph" dir="rtl">
+        <div class="wrapContent">סוגריים רגילים (כמו אלה) צריכים להופיע נכון.</div>
+      </div>
+
+      <div class="block textParagraph" dir="rtl">
+        <div class="wrapContent">סוגריים מרובעים [כמו אלה] וסוגריים מסולסלים {כמו אלה} גם כן.</div>
+      </div>
+
+      <div class="block textParagraph" dir="rtl">
+        <div class="wrapContent">נקודתיים: פסיק, נקודה-פסיק; סימן שאלה? סימן קריאה!</div>
+      </div>
+
+      <div class="block textParagraph" dir="rtl">
+        <div class="wrapContent">מחיר: ₪99.90 (כולל מע"מ), תאריך: 19/03/2026, טלפון: 054-1234567</div>
+      </div>
+    </div>
+
+    <!-- ─── Table ──────────────────────────────────────── -->
+    <div class="demo-section">
+      <h2>Table</h2>
+
+      <div class="block blockTable" dir="rtl">
+        <table>
+          <thead>
+            <tr><th>שם</th><th>תפקיד</th><th>סטטוס</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>נוסלן</td><td>מנכ"ל — CEO</td><td>פעיל</td></tr>
+            <tr><td>דיאנה</td><td>עורכת בכירה — Senior Editor</td><td>פעילה</td></tr>
+            <tr><td>סינדי</td><td>עורכת מתמחה — Intern</td><td>פעילה</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- ─── Code Block ─────────────────────────────────── -->
+    <div class="demo-section">
+      <h2>Code — Always LTR</h2>
+
+      <div class="block textCode" dir="ltr">
+        <div class="wrapContent">// קוד תמיד נשאר LTR
+function detectDirection(text) {
+  const hebrewRegex = /[\u0590-\u05FF]/;
+  return hebrewRegex.test(text) ? 'rtl' : 'ltr';
+}</div>
+      </div>
+    </div>
+
+    <!-- ─── Nested Blocks ──────────────────────────────── -->
+    <div class="demo-section">
+      <h2>Nested Blocks</h2>
+
+      <div class="block textBulleted" dir="rtl">
+        <div class="wrapContent">
+          <span class="marker"></span>
+          <span>רמה ראשונה — הזחה ימנית</span>
+        </div>
+        <div class="children">
+          <div class="block textBulleted" dir="rtl">
+            <div class="wrapContent">
+              <span class="marker"></span>
+              <span>רמה שנייה — הזחה פנימה מימין</span>
+            </div>
+            <div class="children">
+              <div class="block textBulleted" dir="rtl">
+                <div class="wrapContent">
+                  <span class="marker"></span>
+                  <span>רמה שלישית — עמוק יותר</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+</body>
+</html>
